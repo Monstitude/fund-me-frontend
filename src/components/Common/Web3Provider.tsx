@@ -16,7 +16,7 @@ const metadata = {
 const chains = [sepolia];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
-createWeb3Modal({ wagmiConfig, projectId, chains });
+createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: "light" });
 
 function Web3Provider({ children }: { children: ReactNode }) {
   return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;

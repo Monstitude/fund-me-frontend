@@ -2,14 +2,14 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import "styles/globals.css";
 
-const Web3Provider = dynamic(() => import("components/Common/Web3Provider"), {
+const Providers = dynamic(() => import("components/Common/Providers"), {
   ssr: false,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3Provider>
+    <Providers>
       <Component {...pageProps} />
-    </Web3Provider>
+    </Providers>
   );
 }
