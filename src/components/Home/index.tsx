@@ -28,8 +28,8 @@ function Home() {
   };
 
   const {
-    data,
-    write,
+    data: fundData,
+    write: fund,
     isLoading: fundLoading,
     isSuccess: isFundSuccess,
   } = useContractWrite({
@@ -42,12 +42,36 @@ function Home() {
     onError,
   });
 
+  const {
+    data: withdrawData,
+    write: withdraw,
+    isLoading: withdrawLoading,
+    isSuccess: isWithdrawSuccess,
+  } = useContractWrite({
+    address: FUND_ME,
+    abi: FundMe,
+    functionName: "cheaperWithdraw",
+    onSuccess: () => {
+      toast.success("Tx sent successfully");
+    },
+    onError,
+  });
+
   useContractEvent({
     address: FUND_ME,
     abi: FundMe,
-    eventName: "NewOwner",
-    listener(log) {
-      console.log(log);
+    eventName: "Funded",
+    listener() {
+      refetchBalance();
+    },
+  });
+
+  useContractEvent({
+    address: FUND_ME,
+    abi: FundMe,
+    eventName: "Withdraw",
+    listener() {
+      refetchBalance();
     },
   });
 
@@ -94,7 +118,7 @@ function Home() {
                 </div>
                 <button
                   onClick={() => {
-                    write({
+                    fund({
                       value: parseEther(amount),
                     });
                   }}
@@ -111,12 +135,22 @@ function Home() {
               </div>
               <div className="w-full bg-gray-300 h-[1px]"></div>
               <div className="w-full flex flex-col gap-3">
-                <button className="w-full bg-red-500 hover:bg-red-400 disabled:opacity-60 duration-150 ease-in-out text-white text-xl font-medium py-2.5 px-4 rounded-xl">
-                  Withdraw
+                <button
+                  disabled={withdrawLoading}
+                  className="w-full bg-red-500 hover:bg-red-400 disabled:opacity-60 duration-150 ease-in-out text-white text-xl flex justify-center items-center gap-3 font-medium py-2.5 px-4 rounded-xl"
+                  onClick={() => withdraw()}>
+                  {withdrawLoading && (
+                    <Spinner
+                      variant="white"
+                      size="sm"
+                    />
+                  )}{" "}
+                  <span>Withdraw</span>
                 </button>
               </div>
             </div>
-            {isFundSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+            {isFundSuccess && <div>Transaction: {fundData?.hash}</div>}
+            {isWithdrawSuccess && <div>Transaction: {withdrawData?.hash}</div>}
           </>
         ) : (
           <div className="w-full h-full my-auto flex flex-col justify-center items-center gap-4">
