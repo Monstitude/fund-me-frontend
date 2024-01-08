@@ -6,7 +6,7 @@ import { FundMe } from "abis/FundMe";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import getErrorMessage from "lib/getErrorMessage";
-import { formatEther, parseEther, parseGwei } from "viem";
+import { formatEther, parseEther } from "viem";
 import Spinner from "components/Shared/Spinner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -136,7 +136,7 @@ function Home() {
               <div className="w-full bg-gray-300 h-[1px]"></div>
               <div className="w-full flex flex-col gap-3">
                 <button
-                  disabled={withdrawLoading}
+                  disabled={!balance?.value || withdrawLoading}
                   className="w-full bg-red-500 hover:bg-red-400 disabled:opacity-60 duration-150 ease-in-out text-white text-xl flex justify-center items-center gap-3 font-medium py-2.5 px-4 rounded-xl"
                   onClick={() => withdraw()}>
                   {withdrawLoading && (
